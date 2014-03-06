@@ -108,7 +108,8 @@ class Poker
 
 	public function calculateWinner() {
 		foreach($this->players as $player) {
-			$ranking = HandStrength::calculateHandStrength($player->getHand()->toArray(), $this->getCommunityCards());
+			$ranking = new HandStrength($player->getHand()->toArray(), $this->communityCards);
+			echo HandStrength::$STRENGTH[$ranking->calculateHandStrength()] . "\n";
 		}
 	}
 	

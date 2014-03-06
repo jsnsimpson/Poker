@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+
+#poker-table {
+	background: url('../images/poker-skin.png') no-repeat;
+	background-position: 0px -20px;
+	height : 547px;
+	width: 794px;
+	margin: 0 auto;
+}
+
+.chair {
+	border-radius: 6px;
+	border-width: 2px;
+	border-color: black;
+	border-style: solid;
+	height: 75px;
+	width: 75px;
+	position:absolute;
+}
+
+.myseat {
+	background-color: rgb(256, 0, 0);
+}
+
+.pos1 {
+	top: 196px;
+	margin-left: -48px;
+}
+.pos2 {
+	top: 0px;
+	margin-left: 212px;
+}
+
+.pos3 {
+	top: 0px;
+	margin-left: 488px;
+}
+
+.pos4 { 
+	top: 196px;
+	margin-left: 760px;
+}
+.pos5 { 
+	top: 413px;
+	margin-left: 488px;
+}
+.pos6 { 
+	top: 413px;
+	margin-left: 212px;
+
+}

@@ -11,6 +11,18 @@ namespace Game;
  */
 class HandStrength {
 	
+	public static $STRENGTH = array(
+		0 => "HIGH CARD",
+		1 => "PAIR",
+		2 => "TWO PAIR",
+		3 => "THREE OF A KIND",
+		4 => "STRAIGHT",
+		5 => "FLUSH",
+		6 => "FULL HOUSE",
+		7 => "FOUR OF A KIND",
+		8 => "STRAIGHT FLUSH"
+	);
+	
 	const HIGH_CARD = 0;
 	const PAIR = 1;
 	const TWO_PAIR = 2;
@@ -34,9 +46,22 @@ class HandStrength {
 	public function __construct($hand, $commCards=array()) {
 		
 		//set the sortedHand array. 
-		$sortedHand = array_merge($hand, $commCards);
-		usort($this->sortedHand, "sortHand");
+		$this->sortedHand = array_merge($hand, $commCards);
+		usort($this->sortedHand, array($this, "sortHand"));
 		$this->strength = HandStrength::HIGH_CARD;
+	}
+	
+
+	public function sortHand($a, $b) {
+		if ($a->getCardNo() == $b->getCardNo()) {
+			return 0;
+		}
+		else if ($a->getCardNo() > $b->getCardNo()) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
 	}
 	
 	/**
@@ -53,7 +78,7 @@ class HandStrength {
 	public function calculateHandStrength() {
 
 		//first check if a flush - its not expensive.
-		$handStrength = -1;
+		$handStrength = HandStrength::HIGH_CARD; //default to high card (this is the minimum hand strength)
 		$isFlush = false;
 		$isStraight = false;
 		$hasThreeOfAKind = false;
@@ -66,34 +91,36 @@ class HandStrength {
 			$bypassChecks = true;
 		}
 		if(!$bypassChecks && PokerHands::isFlush($this->sortedHand)) {
-			$handStrength = HandStrength::FLUSH;
+			$handStrength = HandStrength::FLUSH; //we don't bypass rest of checks here because there could be a straight flush.
 		} 
 		
 		if(!$bypassChecks && PokerHands::isStraight($this->sortedHand)) {
 			if($handStrength == HandStrength::FLUSH) {
-				//must be a straight flush!
+				//must be a straight flush! - FIXME: This is NOT TRUE!!!
 				$handStrength = HandStrength::STRAIGHT_FLUSH;
 			} else {
 				$handStrength == HandStrength::STRAIGHT;
 			}
-		} 
+			$bypassChecks = true;
+		}  else if($handStrength === HandStrength::FLUSH) {
+			$bypassChecks = true;
+		}
+		
+		
+		if(!$bypassChecks && PokerHands::isFullHouse($this->sortedHand)) {
+			$handStrength = HandStrength::FULL_HOUSE;
+			$bypassChecks = true;
+		}
+		if(!$bypassChecks && PokerHands::isThreeOfAKind($this->sortedHand)) {
+			$handStrength = HandStrength::THREE_OF_A_KIND;
+			$bypassChecks = true;
+		}
 		
 		
 		$this->strength = $handStrength;
 		return $handStrength;
 	}
-		
-	private  function sortHand($a, $b) {
-		if ($a->getCardNo() == $b->getCardNo()) {
-			return 0;
-		}
-		else if ($a->getCardNo() > $b->getCardNo()) {
-			return 1;
-		}
-		else {
-			return -1;
-		}
-	}
+
 	
 	/**
 	 * In the event that two or more players are tied 

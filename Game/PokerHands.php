@@ -82,10 +82,22 @@ class PokerHands {
 		return false;
 	}
 	
+	/**
+	 * Determines if the hand is three of a kind
+	 * @param array $hand
+	 * @see PokerHands::frequentOccurringNumber()
+	 * @return boolean
+	 */
 	public static function isThreeOfAKind($hand) {
-	
+		$threeOfAKind = false;
+		$commonCards = PokerHands::frequentOccurringNumber($hand);
+		foreach($commonCards as $key => $val) {
+			if($commonCards[$key] == 3 ) {
+				$threeOfAKind = true;				
+			}
+		}
 		
-		return (PokerHands::frequentOccurringNumber($hand) == 3 ? true : false);
+		return $threeOfAKind;
 	}
 	
 	/**
@@ -114,7 +126,7 @@ class PokerHands {
 				$countNumbers[$card->getCardNo()] = 1;
 			}
 		}
-		return $highestCount;
+		return $countNumbers;
 	}
 	
 	public static function isTwoPair($hand) {
